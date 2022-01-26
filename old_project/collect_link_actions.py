@@ -1,6 +1,6 @@
 import os
 
-from actual_module.insta_bot import Bot
+from old_project.actual_module.insta_bot import Bot
 import json
 
 

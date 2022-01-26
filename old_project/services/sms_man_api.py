@@ -18,7 +18,7 @@ class SmsManApi:
         self.__api_key = api_key
 
     @property
-    def balance(self) -> dict:
+    def balance(self) -> str:
         params = {
             'token': self.__api_key
         }

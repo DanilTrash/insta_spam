@@ -16,5 +16,5 @@ class GoogleSheetsData:
 
 
 if __name__ == '__main__':
-    old_data = sqlite3.connect(r'C:\Users\KIEV-COP-4\Desktop\insta_spam\database.sqlite')
+    old_data = sqlite3.connect(r'/database.sqlite')
     new_data = sqlite3.connect(r'C:\Users\KIEV-COP-4\Desktop\insta_spam\test_data.db')

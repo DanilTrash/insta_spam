@@ -1,9 +1,9 @@
 import configparser
-from typing import Union
 import sqlite3
+from typing import Union
 
 config = configparser.ConfigParser()
-config.read(r'C:\Users\KIEV-COP-4\Desktop\insta_spam\refactoring\config.ini')
+config.read(r'settings.ini')
 test_db_ = config['db_location']['test_db']
 
 
@@ -12,54 +12,44 @@ class SqliteData:
     con = sqlite3.connect(db_path)
 
 
-class AbstractData(SqliteData):
+class AbstractRow(SqliteData):
     table = None
     primary_key = None
 
     def __init__(self, index):
         self.index = index
 
-    def __getattr__(self, item):
+    def __getattr__(self, item) -> Union[str, int, None]:
         try:
-            value = self.con.execute(f'select {item} from {self.table} where {self.primary_key} = ?', (self.index,)).fetchone()
+            value = self.con.execute(
+                f'select {item} from {self.table} where {self.primary_key} = {self.index}'
+            ).fetchone()[0]
             return value
         except sqlite3.OperationalError:
             return None
 
-
-class Account(SqliteData):
-    table = 'accounts'
-    primary_key = 'account_id'
-
-    def __init__(self, index):
-        self.index = index
-
-    def __getattr__(self, item):
-        try:
-            value = self.con.execute(f'select {item} from {self.table} where {self.primary_key} = ?', (self.index,)).fetchone()
-            return value
-        except sqlite3.OperationalError:
-            return None
-
-    def update(self, key, value):
+    def update(self, key, value) -> None:
         self.con.execute(
-            f'update {self.table} set {key} = ? where {self.primary_key} = ?', (value, self.index)
-        )
+            f'update {self.table} set {key} = ? where {self.primary_key} = {self.index}',
+            (value,))
         self.con.commit()
 
 
-class Device(AbstractData):
+class Account(AbstractRow):
+    table = 'accounts'
+    primary_key = 'id'
+
+
+class Device(AbstractRow):
     table = 'devices'
-    primary_key = 'device_id'
-    foreign_key = 'account_id'
-
-    def __getattr__(self, item):
-        try:
-            value = self.con.execute(f'select {item} from {self.table} where {self.foreign_key} = ?', (self.index,)).fetchone()
-            return value
-        except sqlite3.OperationalError:
-            return None
+    primary_key = 'id'
 
 
-device = Device(1)
-print(device.proxy)
+class Proxy(AbstractRow):
+    table = 'proxys'
+    primary_key = 'id'
+
+
+class Browser(AbstractRow):
+    table = 'browsers'
+    primary_key = 'id'

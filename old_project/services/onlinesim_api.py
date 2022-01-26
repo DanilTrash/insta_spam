@@ -9,9 +9,7 @@ from onlinesimru import GetUser, GetNumbers
 
 class OnlineSimApi:
 
-    @property
-    def name(self):
-        return 'OnlineSimApi'
+    name = 'OnlineSimApi'
 
     def __init__(self, api_key):
         self.sim = GetNumbers(api_key)
@@ -26,8 +24,8 @@ class OnlineSimApi:
             logging.error(error)
             return 'Cant get balance'
 
-    def get_number(self, service, country) -> str:
-        tzid = self.sim.get(service, country=country)
+    def get_number(self, **kwargs) -> str:
+        tzid = self.sim.get(kwargs)
         return tzid
 
     def numbers(self):
